@@ -183,6 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // 3. Update the result container (div#result) inner text to show the number of correct answers out of total questions
     resultContainer.innerText = `You scored ${quiz.correctAnswers} out of ${quiz.questions.length} correct answers!`; // This value is hardcoded as a placeholder
+    clearInterval(timer);
   }
 
   const restartButton = document.querySelector("#restartButton");
@@ -190,11 +191,24 @@ document.addEventListener("DOMContentLoaded", () => {
   restartButton.onclick = function() {
     quizView.style.display = "flex";
     endView.style.display = "none";
+    quiz.timeRemaining = quiz.timeLimit;
     quiz.currentQuestionIndex = 0;
     quiz.correctAnswers = 0;
     quiz.shuffleQuestions();
     showQuestion();
-  
+    innitTimer();
+  }
+  innitTimer();
+  function innitTimer () {
+    timer = setInterval(function() {
+      const minutes = Math.floor(quiz.timeRemaining / 60).toString().padStart(2, "0");
+      const seconds = (quiz.timeRemaining % 60).toString().padStart(2, "0");
+      timeRemainingContainer.innerText = `${minutes}:${seconds}`;
+      quiz.timeRemaining--;
+      if (quiz.timeRemaining === 0) {
+        showResults();
+      }
+    }, 1000)
   }
 });
 
